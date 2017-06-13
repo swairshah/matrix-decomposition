@@ -1,6 +1,5 @@
 import numpy as np
 import numpy.linalg as lin
-from norm_schatten import *
 import itertools
 
 def error(X, S, p):
