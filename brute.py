@@ -22,25 +22,24 @@ def residual(X, S, p):
 def reduce_ksvd(X, k):
     U, s, V = np.linalg.svd(X)
     Uk = U[:,0:k]
-    Vk = V[:,0:k]
+    Vk = V[0:k,:]
     sk = s[0:k]
-    Xk = Uk.dot(np.diag(sk).dot(Vk.T))
-    return (X - Xk), Uk
+    Xk = Uk.dot(np.diag(sk).dot(Vk))
+    return (X - Xk)
 
 def reduce_ksvd2(X, k):
     U, s, V = np.linalg.svd(X)
     Uk = U[:,0:k]
     proj = Uk.dot(np.linalg.pinv(Uk))
-    R = X - proj.dot(X)
-    return (X - R)
+    return (X - proj.dot(X))
 
-def VS(X, k1, k2, p):
-    Xk, Uk = reduce_ksvd(X, k2)
-    selection, err = select(Xk, k1, p)
-    Xs = X[:,selection]
-    SS = np.hstack((Xs, Uk))
-    err = error_vec(X, SS, p)
-    return selection, err
+#def VS(X, k1, k2, p):
+#    Xk, Uk = reduce_ksvd(X, k2)
+#    selection, err = select(Xk, k1, p)
+#    Xs = X[:,selection]
+#    SS = np.hstack((Xs, Uk))
+#    err = error_vec(X, SS, p)
+#    return selection, err
 
 def select(X, k, p):
     m, n = X.shape
