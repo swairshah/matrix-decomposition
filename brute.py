@@ -1,5 +1,5 @@
 import numpy as np
-import numpy.linalg as lin
+from numpy.linalg import svd, pinv, norm
 import itertools
 
 def error(X, S, p):
@@ -41,18 +41,48 @@ def reduce_ksvd2(X, k):
 #    err = error_vec(X, SS, p)
 #    return selection, err
 
-def select(X, k, p):
+#def select(X, k, p):
+#    m, n = X.shape
+#    min_selection = None
+#    min_err = float('inf')
+#    for sub in itertools.combinations(range(n), k):
+#        S = list(sub)
+#        err = error(X, S, p)
+#        if err < min_err:
+#            min_err = err
+#            min_selection = S
+#    return min_selection, min_err
+
+def select(X, k1, k2):
     m, n = X.shape
     min_selection = None
     min_err = float('inf')
-    for sub in itertools.combinations(range(n), k):
+    for sub in itertools.combinations(range(n), k1):
         S = list(sub)
-        err = error(X, S, p)
+        #print(S)
+        #print(fg(X, S, k1, k2))
+        X_Xs = X.copy()
+        X_Xs[:, S] = 0
+        #print(S, X_Xs)
+        R = reduce_ksvd(X_Xs, k2)
+        err = norm(R)**2
+        #print(S, err)
         if err < min_err:
             min_err = err
             min_selection = S
     return min_selection, min_err
 
+def fg(X, S, k1, k2):
+    X_Xs = X.copy()
+    X_Xs[:, S] = 0
+    ki = len(S)
+    Rf = reduce_ksvd(X_Xs, k2 + k1 - ki)
+    Rg = reduce_ksvd(X_Xs, k2)
+    return norm(Rf)**2, norm(Rg)**2
+
 if __name__ == "__main__":
-    #X = np.genfromtxt('~/ml/data/libras.data', delimiter=' ')
-    pass
+    X = np.genfromtxt('data/spectf.data')
+    S, err = select(X, 3, 10)
+    print("Selection :",S)
+    print("Error:",err)
+
