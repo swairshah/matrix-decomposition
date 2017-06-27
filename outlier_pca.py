@@ -29,7 +29,7 @@ def outlier_pca(X, k1, k2, iters = 5):
     def run_iter(C_s, C_v):
         err_dict = {}
         V, A = VA(subtract(X, C_s), k2)
-        for idx, col in enumerate(C_v):
+        for idx, col in enumerate(C):
             err = norm(X[:, col] - V.dot(A[:,idx]))
             err_dict[col] = (-1*err)
 	
@@ -78,7 +78,7 @@ def avg_outlier_pca(X, k1, k2, iters = 5):
     def run_iter(C_s, C_v):
         err_dict = {}
         V, A = VA(subtract(X, C_s), k2)
-        for idx, col in enumerate(C_v):
+        for idx, col in enumerate(C):
             err = norm(X[:, col] - V.dot(A[:,idx]))
             score_dict[col].append(err)
 	
@@ -108,6 +108,6 @@ def avg_outlier_pca(X, k1, k2, iters = 5):
 if __name__ == "__main__":
     np.set_printoptions(suppress = True, precision = True)
     X = np.random.uniform(size = (10,20), low = 0, high = 100)
-    print(outlier_pca(X, 5, 4, iters = 30))
+    print(outlier_pca(X, 2, 4, iters = 30))
     print()
-    print(avg_outlier_pca(X, 5, 4, iters = 500))
+    print(avg_outlier_pca(X, 2, 4, iters = 500))
